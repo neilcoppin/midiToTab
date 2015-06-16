@@ -22,13 +22,14 @@ public class MidiReader {
 		
 		//Influenced by http://stackoverflow.com/questions/3850688/reading-midi-files-in-java 
 		Sequence sequence = MidiSystem.getSequence(midiFile);
-
+		 
 		int trackNumber = 0;
 		for (Track track : sequence.getTracks()) {
 			trackNumber++;
 			System.out.println("Track " + trackNumber + ": size = "
 					+ track.size());
 			System.out.println();
+			System.out.println("Ticks per quarter note "+sequence.PPQ);
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				System.out.print("@" + event.getTick() + " ");
