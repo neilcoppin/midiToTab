@@ -6,11 +6,13 @@ import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
+import javax.sound.midi.Sequencer;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
 public class MidiReader {
 
+	
 	public static final int NOTE_ON = 0x90;
 	public static final int NOTE_OFF = 0x80;
 	public static final String[] NOTE_NAMES = { "C", "C#", "D", "D#", "E", "F",
@@ -18,11 +20,14 @@ public class MidiReader {
 	
 			
 
-	public static void parse(File midiFile) throws Exception {
+	public static void  parse(File midiFile) throws Exception {
 		
 		//Influenced by http://stackoverflow.com/questions/3850688/reading-midi-files-in-java 
 		Sequence sequence = MidiSystem.getSequence(midiFile);
-		 
+		Sequencer sequencer = MidiSystem.getSequencer();
+		sequencer.setSequence(sequence);
+		Float bpm = sequencer.getTempoInBPM();
+		  
 		int trackNumber = 0;
 		for (Track track : sequence.getTracks()) {
 			trackNumber++;
@@ -30,6 +35,7 @@ public class MidiReader {
 					+ track.size());
 			System.out.println();
 			System.out.println("Ticks per quarter note "+sequence.PPQ);
+			System.out.println(bpm+"BPM");
 			for (int i = 0; i < track.size(); i++) {
 				MidiEvent event = track.get(i);
 				System.out.print("@" + event.getTick() + " ");
