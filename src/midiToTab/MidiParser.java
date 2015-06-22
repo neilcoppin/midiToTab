@@ -9,13 +9,16 @@ import javax.sound.midi.InvalidMidiDataException;
 
 import org.jfugue.midi.MidiFileManager;
 import org.jfugue.pattern.Pattern;
+//import org.jfugue.player.Player;
 
 public class MidiParser {
 	
 	public static String midiToString(File midiFile) throws IOException, InvalidMidiDataException {
 		
+		//Player player = new Player();
 		Pattern pattern = MidiFileManager.loadPatternFromMidi(midiFile);
 	    //System.out.println(pattern);
+		
 	    
 	    String output = pattern.toString();
 	    //System.out.println(output);

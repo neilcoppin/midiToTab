@@ -6,14 +6,11 @@ import java.io.PrintWriter;
 
 public class Transcriber {
 
-	public static final char[] VALID_NOTES = { 'A', 'B', 'C', 'D', 'E', 'F',
-			'G', 'R' };
 	public static final char[] MIDI_DURATIONS = { 'w', 'h', 'q', 'i', 's', 't',
 			'x', 'o' };
 	public static final String[] TAB_DURATIONS = { "W", "w", "0", "1", "2",
 			"3", "4", "5" };
-	public static final char[] VALID_OCTAVES = { '0', '1', '2', '3', '4', '5',
-			'6', '7', '8' };
+	
 
 	String outputFilename = "output.txt";
 	int eventCounter = 0;
@@ -39,19 +36,22 @@ public class Transcriber {
 		}
 
 		// Check for valid note
-		for (int i = 0; i < VALID_NOTES.length; i++) {
+		for (int i = 0; i < Note.VALID_NOTES.length; i++) {
 
-			if (eventFirstChar == VALID_NOTES[i]) {
+			if (eventFirstChar == Note.VALID_NOTES[i]) {
 				Note note =	getNoteDetails(eventFirstChar, event);
-				String bum = note.toTabOutput(stringBuilder);
+				note.toTabOutput(stringBuilder);
 				System.out.println();
 				//stringBuilder.append(tabString);
 				note.newNote();
 				eventCounter++;				
 				break;
-			} /*
-			 * else { System.out.println("Can't find owt :/"); }
-			 */
+			} else if (eventFirstChar == 'R') {
+				//Handle rest note
+				System.out.println("Skipping rest note");
+				break;
+			}
+			
 		}
 	}
 
