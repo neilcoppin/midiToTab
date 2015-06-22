@@ -24,7 +24,8 @@ public class Converter {
 			
 			trsc.transcribeEvent(event, pw);
 		}
-
+		System.out.println("All done, ending doc");
+		pw.println("e");
 		scanner.close();
 
 	}

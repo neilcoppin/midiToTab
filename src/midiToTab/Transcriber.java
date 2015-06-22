@@ -6,21 +6,19 @@ import java.io.PrintWriter;
 
 public class Transcriber {
 
-	public static final char[] MIDI_DURATIONS = { 'w', 'h', 'q', 'i', 's', 't',
-			'x', 'o' };
-	public static final String[] TAB_DURATIONS = { "W", "w", "0", "1", "2",
-			"3", "4", "5" };
+	
 	
 
 	String outputFilename = "output.txt";
 	int eventCounter = 0;
 	String lastTimeStamp;
 	StringBuilder stringBuilder = new StringBuilder();
+	TabBuilder tab = new TabBuilder();
 
 	public void transcribeEvent(String event, PrintWriter pw) throws Exception {
 
 		char eventFirstChar = event.charAt(0);
-
+		
 		if (eventFirstChar == '@') {
 			String stringTimeStamp = event.substring(1);
 			String newTimeStamp = stringTimeStamp;
@@ -29,6 +27,9 @@ public class Transcriber {
 				if (eventCounter >= 1) {
 					System.out.println("Gonna write now...");
 					commitEventToTranscript(pw);
+				}
+				if (eventCounter%16==0){
+					writeBreakLine(pw);
 				}
 			}
 
@@ -40,8 +41,10 @@ public class Transcriber {
 
 			if (eventFirstChar == Note.VALID_NOTES[i]) {
 				Note note =	getNoteDetails(eventFirstChar, event);
-				note.toTabOutput(stringBuilder);
-				System.out.println();
+				System.out.println("TRANSCRIBER: Calls note.getCourseAndFret = " + note.getCourseAndFret());
+				System.out.println("TRANSCRIBER: Calls note.getDuration = " + note.getDuration());
+				tab.addNote(note.getCourseAndFret(),note.getDuration()); 
+				
 				//stringBuilder.append(tabString);
 				note.newNote();
 				eventCounter++;				
@@ -55,10 +58,17 @@ public class Transcriber {
 		}
 	}
 
+	private void writeBreakLine(PrintWriter pw) {
+
+		pw.println("");
+		
+	}
+
 	private void commitEventToTranscript(PrintWriter pw) {
-		System.out.println("Attempting write");
-		pw.println(stringBuilder);
-		stringBuilder = null;
+		System.out.println("Attempting write: " + tab.commitLine());
+		pw.println(tab.commitLine());
+		tab.newLine();
+		System.out.println("TRANSCRIBER: tab.newLine = " + tab.commitLine());
 	}
 
 	private Note getNoteDetails(char noteName, String event) throws Exception {
@@ -97,20 +107,11 @@ public class Transcriber {
 		// handle decimal value NOT COMPLETE! DEFAULTS TO q
 		if (currentChar == '/') {
 			// convertDecimalDuration(event.substring(i+1));
-			currentChar = 'q';
+			currentChar = 'x';
 		}
 		note.setDuration(currentChar);
 		return note;
 
-	}
-
-	private char convertDecimalDuration(String decValue) {
-		System.out.println("decValue = " + decValue);
-		char returnChar;
-		double dVal = Double.parseDouble(decValue);
-		returnChar = MidiParser.decDurationToChar(dVal);
-		System.out.println("returnChar = " + returnChar);
-		return returnChar;
 	}
 
 	public void getNotePosition(String note) {
