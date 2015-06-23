@@ -17,7 +17,7 @@ public class Note {
 	public static final byte[] OCTAVE_2 = { 24, 26, 28, 29, 31, 33, 35 };
 	public static final byte[] OCTAVE_3 = { 36, 38, 40, 41, 43, 45, 47 };
 	public static final byte[] OCTAVE_4 = { 48, 50, 52, 53, 55, 57, 59 };
-	public static final byte[] OCTAVE_5 = { 60, 62, 64, 65, 67, 69, 70 };
+	public static final byte[] OCTAVE_5 = { 60, 62, 64, 65, 67, 69, 71 };
 	public static final byte[] OCTAVE_6 = { 72, 74, 76, 77, 79, 81, 83 };
 	public static final byte[] OCTAVE_7 = { 84, 86, 88, 89, 91, 93, 95 };
 	public static final byte[] OCTAVE_8 = { 96, 98, 100, 101, 103, 105, 107 };
@@ -36,7 +36,7 @@ public class Note {
 	public static final byte[] ALL_VALUES_OCTAVE_4 = { 48, 49, 50, 51, 52, 53,
 			54, 55, 56, 57, 58, 59 };
 	public static final byte[] ALL_VALUES_OCTAVE_5 = { 60, 61, 62, 63, 64, 65,
-			66, 67, 68, 69, 70, 70 };
+			66, 67, 68, 69, 70, 71 };
 	public static final byte[] ALL_VALUES_OCTAVE_6 = { 72, 73, 74, 75, 76, 77,
 			78, 79, 80, 81, 82, 83 };
 	public static final byte[] ALL_VALUES_OCTAVE_7 = { 84, 85, 86, 87, 88, 89,
@@ -218,6 +218,7 @@ public class Note {
 			for (int i = 0; i < Lute.FIRST_COURSE.length; i++) {
 
 				if (val == Lute.FIRST_COURSE[i]) {
+					System.out.println("The val is: " + val + " so the fret number is i = " + i + " and fret letter " + Lute.FRET_POSITIONS[i]);
 					outputStr = "1"
 							+ Character.toString(Lute.FRET_POSITIONS[i]);
 					noteWritten = true;
@@ -232,14 +233,55 @@ public class Note {
 
 	}
 
-	private char convertDecimalDuration(String decValue) {
-		System.out.println("decValue = " + decValue);
-		char returnChar;
-		double dVal = Double.parseDouble(decValue);
-		returnChar = MidiParser.decDurationToChar(dVal);
-		System.out.println("returnChar = " + returnChar);
-		return returnChar;
-	}
+	  public static String decimalDurationToString(double decimalDuration)
+	  {
+	    StringBuilder sb = new StringBuilder();
+	    System.out.println("NOTE: p1 decimalDuration = " + decimalDuration);
+	    if (decimalDuration >= 1.0D)
+	    {
+	      int countWholes = (int)Math.floor(decimalDuration);
+	      sb.append("w");
+	      if (countWholes > 1) {
+	        sb.append(Integer.toString(countWholes));
+	      }
+	      decimalDuration -= countWholes;
+	      System.out.println("NOTE: p2 decimalDuration = " + decimalDuration);
+	    }
+	    if (decimalDuration >= 0.75D) {
+	      sb.append("h.");
+	    } else if ((decimalDuration < 0.75) && (decimalDuration >= 0.5D)){
+	    	sb.append("h");
+	    } else if ((decimalDuration < 0.5D) && (decimalDuration >= 0.375D)){
+	    	sb.append("q.");
+	    } else if ((decimalDuration < 0.375D) && (decimalDuration >= 0.25D)){
+	    	sb.append("q");
+	    } else if ((decimalDuration < 0.25D) && (decimalDuration >= 0.1875D)){
+	    	sb.append("i.");
+	    } else if ((decimalDuration < 0.1875D) && (decimalDuration >= 0.125D)) {
+	    	sb.append("i");
+	    } else if ((decimalDuration < 0.125D) && (decimalDuration >= 0.09375D)) {
+	    	sb.append("s.");
+	    } else if ((decimalDuration < 0.09375D) && (decimalDuration >= 0.0625D)) {
+	    	sb.append("s");
+	    } else if ((decimalDuration < 0.0625D) && (decimalDuration >= 0.046875D)) {
+	    	sb.append("t.");
+	    } else if ((decimalDuration < 0.046875D) && (decimalDuration >= 0.03125D)) {
+	    	sb.append("t");
+	    } else if ((decimalDuration < 0.03125D) && (decimalDuration >= 0.0234375D)) {
+	    	sb.append("x.");
+	    } else if ((decimalDuration < 0.0234375D) && (decimalDuration >= 0.015625D)) {
+	    	sb.append("x");
+	    } else if ((decimalDuration < 0.015625D) && (decimalDuration >= 0.01171875D)) {
+	    	sb.append("o.");
+	    } else if ((decimalDuration < 0.01171875D) && (decimalDuration >= 0.0078125D)) {
+	    	sb.append("o");
+	    } else if ((decimalDuration < 0.0078125D) && (decimalDuration >= 0.0D)) {
+	    	System.out.println("NOTE: Can't get decimal value, using whole note");
+	    	return "w";
+	    }
+	    System.out.println("NOTE: Converted: " + decimalDuration + " into: " + sb.toString());
+	    return sb.toString();
+	  }
 
 	public char getDuration() {
 		char dur = duration;

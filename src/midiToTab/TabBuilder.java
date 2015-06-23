@@ -27,7 +27,7 @@ public class TabBuilder {
 	}
 	
 	public String commitLine(){
-		System.out.println("TABBUILDER: Committing: " + line.toString());
+		//System.out.println("TABBUILDER: Committing: " + line.toString());
 		return line.toString();
 	}
 	
